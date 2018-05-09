@@ -104,9 +104,9 @@ sumOddSquares4 xs = sum [x ^ 2 | x <- xs, odd x]
   f1, f2, …, fn.
 -}
 
-compositionOnSteroids [(Int -> Int)] -> (Int -> Int)
-compositionOnSteroids [] x = x
-compositionOnSteroids fs x = ((compositionOnSteroids (init fs)) . (last fs)) x
+--compositionOnSteroids [(Int -> Int)] -> (Int -> Int)
+--compositionOnSteroids [] x = x
+--compositionOnSteroids fs x = ((compositionOnSteroids (init fs)) . (last fs)) x
 
 {-
   Зад. 7. Да се дефинира процедура (hex2bin xs), която преобразува 16-тичното
