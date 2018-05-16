@@ -1,7 +1,11 @@
+import Data.List
+
 main :: IO()
 main = do
  print (addMatrices [[1,2],[3,4]] [[4,3],[2,1]])
  print (nullify [[1,2,9,0],[3,6,3,4],[3,9,4,3],[2,0,3,1]])
+ print (myTranspose [[1,2],[5,6],[3,4]])
+ print (multMat [[1,2],[2,1]] [[3,4],[4,3]])
  
 {-
   Зад. 1. Да се напише функция, която намира сбора на две матрици, представени
@@ -28,14 +32,25 @@ nullify matrix = zipWith (\ x xs -> x:xs) (cleanCol (map head matrix)) (nullify 
   Зад. 3. Напишете функция която намира транспонираната на дадена матрица.
 -}
 
+myTranspose :: [[Int]] -> [[Int]]
+myTranspose [] = []
+myTranspose ([] : xss) = myTranspose xss
+myTranspose ((x:xs) : xss) = (x : [h | (h:_) <- xss]) : myTranspose (xs : [ t | (_:t) <- xss]) 
+
 {-
   Зад. 4. Напишете функция, която намира произведението на две матрици.
 -}
+
+multMat :: Num a => [[a]] -> [[a]] -> [[a]]
+multMat xss yss = [[sum (zipWith (*) xs ys) | ys <- (transpose yss)] | xs <- xss]
 
 {-
   Зад. 5. Напишете функция, която намира броя на дъгите на граф, представен
   чрез матрица на съседство.
 -}
+
+countEdges :: [[Int]] -> Int
+countEdges graph = 
 
 {-
   Зад. 6. Напишете функция, която намира всички листа на дърво, представено
