@@ -6,6 +6,8 @@ main = do
  print (nullify [[1,2,9,0],[3,6,3,4],[3,9,4,3],[2,0,3,1]])
  print (myTranspose [[1,2],[5,6],[3,4]])
  print (multMat [[1,2],[2,1]] [[3,4],[4,3]])
+ print (countEdges [[1,2,3,4],[2,1,3],[3,1,2],[4,1]])
+ print (leafsOfMatrix [[1,2,3,4],[2,1,3],[3,1,2],[4,1]])
  
 {-
   Зад. 1. Да се напише функция, която намира сбора на две матрици, представени
@@ -50,9 +52,12 @@ multMat xss yss = [[sum (zipWith (*) xs ys) | ys <- (transpose yss)] | xs <- xss
 -}
 
 countEdges :: [[Int]] -> Int
-countEdges graph = 
+countEdges graph = sum (map sum graph)
 
 {-
   Зад. 6. Напишете функция, която намира всички листа на дърво, представено
   чрез матрица на съседство.
 -}
+
+leafsOfMatrix :: [[Int]] -> [Int]
+leafsOfMatrix xss = [ind | (ind, edgesCount) <- zip [0..] (map sum xss), edgesCount == 0]

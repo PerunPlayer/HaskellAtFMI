@@ -20,7 +20,7 @@ import Data.List
 nodes :: (Eq a) => [(a, a)] -> [a]
 nodes edges = nub ((uncurry (++)) (unzip edges))
 
-nodes2 = nub . (uncurry (++)) . unzip
+--nodes2 = nub . (uncurry (++)) . unzip
 
 neighbours :: (Eq a) => [(a, a)] -> a -> [a]
 neighbours edges node = [v2 | (v1, v2) <- edges, v1 == node]
@@ -37,8 +37,11 @@ adjacencyList edges = [(v, neighbours edges v) | v <- nodes edges]
     isPath [(1, [2, 3]), (2, [3, 4]), (3, []), (4, [])] [1, 3, 4] -> False
 -}
 isPath :: (Eq a) => [(a, [a])] -> [a] -> Bool
-isPath adjs nodes = undefined
-
+isPath adjs [] = False
+isPath adjs nodes
+ | (length nodes == 1) && (elem (head nodes) [node | (node, children) <- adjs]) = True
+ | (elem (head nodes) [node | (node, children) <- adjs]) && (elem (nodes !! 1) (concat [children | (node, children) <- adjs, node == (head nodes)])) = isPath adjs (tail nodes)
+ | otherwise = False
 
 {-
 Задача 3. Нека е дадено двойчно дърво, представено като списък от тройки,
@@ -52,22 +55,20 @@ isPath adjs nodes = undefined
     listLeaves [(1, 2, 3), (2, 4, 5)] -> [4, 3, 5]
     listLeaves [(2, 4, 5), (1, 2, 3)] -> [4, 5, 3]
 -}
+
+tupleToList :: (Eq a) => [(a,a)] -> [a]
+tupleToList ((a,b):xs) = a : b : tupleToList xs
+tupleToList _ = []
+
 listLeaves :: (Eq a) => [(a, a, a)] -> [a]
-listLeaves nodes = undefined
+listLeaves [] = []
+listLeaves nodes = leaves \\ vertexes
+ where leaves = tupleToList (map sndthd nodes)
+       vertexes = map first nodes
+       sndthd (_, leaf1, leaf2) = (leaf1, leaf2)
+       first (v, _, _) = (v)
 
 
-{-
-Задача 4*. Дефинирайте функцията simplePaths adjs k node, която приема списък на
-наследниците adjs на даден ориентиран граф, цяло число k и идентификатор на връх
-node и връща всички прости пътища с дължина k, които започват от node.
-
-Примери:
-    simplePaths [(1, [2, 3]), (2, [3, 4]), (3, []), (4, [])] 0 1 -> [[1]]
-    simplePaths [(1, [2, 3]), (2, [3, 4]), (3, []), (4, [])] 1 1 -> [[1, 2], [1, 3]]
-    simplePaths [(1, [2, 3]), (2, [3, 4]), (3, []), (4, [])] 2 1 -> [[1, 2, 3], [1, 2, 4]]
--}
-simplePaths :: (Eq a) => [(a, [a])] -> Int -> a -> [[a]]
-simplePaths adjs k node = undefined
 
 
 -- ТЕСТОВЕ НА ЗАДАЧИТЕ --
@@ -82,7 +83,3 @@ main = do
 
     print $ listLeaves [(1, 2, 3), (2, 4, 5)]
     print $ listLeaves [(2, 4, 5), (1, 2, 3)]
-
-    print $ simplePaths [(1, [2, 3]), (2, [3, 4]), (3, []), (4, [])] 0 1
-    print $ simplePaths [(1, [2, 3]), (2, [3, 4]), (3, []), (4, [])] 1 1
-    print $ simplePaths [(1, [2, 3]), (2, [3, 4]), (3, []), (4, [])] 2 1
