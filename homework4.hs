@@ -59,10 +59,8 @@ grandchildrenIncreased :: (Num a, Ord a) => BTree a -> Bool
 grandchildrenIncreased Empty = False
 grandchildrenIncreased tree
   | (treeDepth tree == 1) || (treeDepth tree == 2) = True
-  | otherwise = 
-    if greater then (grandchildrenIncreased (getLeft tree)) && (grandchildrenIncreased (getRight tree)) else False
-      where greater = all (>= ((getValue tree) - 1)) (treeNodesAtLevel tree 2)
-
+  | otherwise = (grandchildrenIncreased (getLeft tree)) && (grandchildrenIncreased (getRight tree)) && (all (>= ((getValue tree) - 1)) (treeNodesAtLevel tree 2))
+      
 main :: IO()
 main = 
   let tree = (Node 8 (Node 6 (Node 4 (Node 2 Empty Empty) (Node 2 Empty Empty)) (Node 4 (Node 2 Empty Empty) (Node 2 Empty Empty))) (Node 6 (Node 4 (Node 2 Empty Empty) (Node 2 Empty Empty)) (Node 4 (Node 2 Empty Empty) (Node 2 Empty Empty))))
@@ -70,3 +68,4 @@ main =
     print (findAvg [2.3, 4.5, 7.0, 9.9, 6.5])
     print (closestToAverage [(Temp 1 23.6),(Temp 6 24.2),(Temp 11 24.2),(Temp 16 21.2),(Temp 21 23.8),(Temp 26 26.5),(Temp 31 24.5)])
     print(grandchildrenIncreased tree)
+    print(grandchildrenIncreased (Node 17 (Node 14 (Node 18 (Node 16 Empty Empty) (Node 201 Empty Empty)) (Node 201 (Node 19 Empty Empty) (Node 201 Empty Empty))) (Node 20 (Node 171 (Node 21 Empty Empty) (Node 201 Empty Empty)) (Node 204 Empty Empty))))
