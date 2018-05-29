@@ -1,8 +1,3 @@
-main :: IO()
-main = do
- print (findAvg [2.3, 4.5, 7.0, 9.9, 6.5])
- print (closestToAverage [(Temp 1 23.6),(Temp 6 24.2),(Temp 11 24.2),(Temp 16 21.2),(Temp 21 23.8),(Temp 26 26.5),(Temp 31 24.5)])
- 
 {-
 Температурно измерване се описва с типа data Measuring = Temp Int Float, където стойността от тип Int задава ден
 от месеца, а стойността от тип Float – измерена температура за този ден. Дефинирайте функция 
@@ -39,15 +34,39 @@ data BTree = Empty | Node Int BTree Btree. Да се дефинира функц
 -}
 --Функция, която проверява дали всеки връх на двоичното дърво е поне с 1 по-голям от своя дядо (ако има такъв).
 
-data BTree = Empty | Node Int BTree Btree
 
---access ancestor
+data BTree a = Empty | Node a (BTree a) (BTree a)
 
-treeDepth :: (Num b, Ord b) => Tree a -> b
+treeDepth :: BTree a -> Int
+treeDepth Empty = 0
 treeDepth (Node value (tr1) (tr2)) = 1 + max (treeDepth tr1) (treeDepth tr2)
 
-grandchildrenIncreased :: BTree -> Bool
+getLeft :: BTree a -> BTree a
+getLeft (Node value left right) = left
+
+getRight :: BTree a -> BTree a
+getRight (Node value left right) = right
+
+getValue :: BTree a -> a
+getValue (Node value left right) = value
+
+treeNodesAtLevel :: (Eq b, Num b) => BTree a -> b -> [a]
+treeNodesAtLevel Empty _ = []
+treeNodesAtLevel (Node value _ _) 0 = [value]
+treeNodesAtLevel (Node _ tr1 tr2) n = (treeNodesAtLevel tr1 (n-1)) ++  (treeNodesAtLevel tr2 (n-1))
+
+grandchildrenIncreased :: (Num a, Ord a) => BTree a -> Bool
 grandchildrenIncreased Empty = False
-grandchildrenIncreased tree = 
+grandchildrenIncreased tree
   | (treeDepth tree == 1) || (treeDepth tree == 2) = True
   | otherwise = 
+    if greater then (grandchildrenIncreased (getLeft tree)) && (grandchildrenIncreased (getRight tree)) else False
+      where greater = all (>= ((getValue tree) - 1)) (treeNodesAtLevel tree 2)
+
+main :: IO()
+main = 
+  let tree = (Node 8 (Node 6 (Node 4 (Node 2 Empty Empty) (Node 2 Empty Empty)) (Node 4 (Node 2 Empty Empty) (Node 2 Empty Empty))) (Node 6 (Node 4 (Node 2 Empty Empty) (Node 2 Empty Empty)) (Node 4 (Node 2 Empty Empty) (Node 2 Empty Empty))))
+  in do
+    print (findAvg [2.3, 4.5, 7.0, 9.9, 6.5])
+    print (closestToAverage [(Temp 1 23.6),(Temp 6 24.2),(Temp 11 24.2),(Temp 16 21.2),(Temp 21 23.8),(Temp 26 26.5),(Temp 31 24.5)])
+    print(grandchildrenIncreased tree)
